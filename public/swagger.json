@@ -1,0 +1,507 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"returnError": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"message": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"code",
+					"message"
+				],
+				"type": "object"
+			},
+			"responseCreateToken": {
+				"properties": {
+					"success": {
+						"type": "boolean"
+					},
+					"remaining": {
+						"type": "number",
+						"format": "double"
+					},
+					"token": {
+						"type": "string"
+					},
+					"error": {
+						"$ref": "#/components/schemas/returnError"
+					}
+				},
+				"required": [
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"responseRenewToken": {
+				"properties": {
+					"success": {
+						"type": "boolean"
+					},
+					"remaining": {
+						"type": "number",
+						"format": "double"
+					},
+					"error": {
+						"$ref": "#/components/schemas/returnError"
+					}
+				},
+				"required": [
+					"success"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"responseCreateArticle": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"title": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"error": {
+						"$ref": "#/components/schemas/returnError"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"articleParameters": {
+				"properties": {
+					"description": {
+						"type": "string"
+					},
+					"title": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"description",
+					"title"
+				],
+				"type": "object"
+			},
+			"responseDetailArticle": {
+				"properties": {
+					"id": {
+						"type": "number",
+						"format": "double"
+					},
+					"title": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"error": {
+						"$ref": "#/components/schemas/returnError"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
+			"simpleArticle": {
+				"properties": {
+					"title": {
+						"type": "string"
+					},
+					"id": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"title",
+					"id"
+				],
+				"type": "object"
+			},
+			"paginationMeta": {
+				"properties": {
+					"count": {
+						"type": "number",
+						"format": "double"
+					},
+					"page": {
+						"type": "number",
+						"format": "double"
+					},
+					"pageCount": {
+						"type": "number",
+						"format": "double"
+					},
+					"pageSize": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"count",
+					"page",
+					"pageCount",
+					"pageSize"
+				],
+				"type": "object"
+			},
+			"responseListArticles": {
+				"properties": {
+					"list": {
+						"items": {
+							"$ref": "#/components/schemas/simpleArticle"
+						},
+						"type": "array"
+					},
+					"meta": {
+						"$ref": "#/components/schemas/paginationMeta"
+					},
+					"error": {
+						"$ref": "#/components/schemas/returnError"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "swagger-ts",
+		"version": "1.0.0",
+		"description": "Article handler with token auth",
+		"license": {
+			"name": "MIT"
+		},
+		"contact": {
+			"name": "csipkesz"
+		}
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/token/create": {
+			"post": {
+				"operationId": "CreateToken",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/responseCreateToken"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"success": true,
+											"remaining": 5,
+											"token": "1a204ee3-9d94-45cb-82c6-34e66754e2d5"
+										}
+									},
+									"Example 2": {
+										"value": {
+											"success": false,
+											"error": {
+												"message": "Hibaüzenet, ami leírja a pontos hibát.",
+												"code": 500
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "UUID token létrehozása a cikkek eléréséhez.",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "string"
+							},
+							"examples": {
+								"Example 1": {
+									"value": {
+										"platform": "IOS"
+									}
+								},
+								"Example 2": {
+									"value": {
+										"platform": "WEB"
+									}
+								},
+								"Example 3": {
+									"value": {
+										"platform": "ANDROID"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/token/renew": {
+			"patch": {
+				"operationId": "RenewToken",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/responseRenewToken"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"success": true,
+											"remaining": 5
+										}
+									},
+									"Example 2": {
+										"value": {
+											"success": false,
+											"error": {
+												"message": "Hibaüzenet, ami leírja a pontos hibát.",
+												"code": 500
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "UUID token frissítése.",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "string"
+							},
+							"example": {
+								"token": "77464b35-7631-4ab1-b2d8-9f1800a0aa4f"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/article/create": {
+			"post": {
+				"operationId": "CreateArticle",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/responseCreateArticle"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"id": 1,
+											"title": "Mosógép",
+											"description": "Nagyon hasznos, ki tudja mosni a ruhákat meg egyéb textiliákat."
+										}
+									},
+									"Example 2": {
+										"value": {
+											"error": {
+												"message": "Hibaüzenet, ami leírja a pontos hibát.",
+												"code": 500
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "Cikk létrehozása",
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/articleParameters"
+							},
+							"example": {
+								"title": "Mosógép",
+								"description": "Nagyon hasznos, ki tudja mosni a ruhákat meg egyéb textiliákat."
+							}
+						}
+					}
+				}
+			}
+		},
+		"/article/detail/{id}/{token}": {
+			"get": {
+				"operationId": "DetailArticle",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/responseDetailArticle"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"id": 1,
+											"title": "Mosógép",
+											"description": "Nagyon hasznos, ki tudja mosni a ruhákat meg egyéb textiliákat."
+										}
+									},
+									"Example 2": {
+										"value": {
+											"error": {
+												"message": "Hibaüzenet, ami leírja a pontos hibát.",
+												"code": 500
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "Cikk lekérdezése ID alapján, a token felhasználásra kerül.",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						},
+						"example": "15"
+					},
+					{
+						"in": "path",
+						"name": "token",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"example": "77464b35-7631-4ab1-b2d8-9f1800a0aa4f"
+					}
+				]
+			}
+		},
+		"/article/list/{pageSize}/{page}": {
+			"get": {
+				"operationId": "ListArticles",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/responseListArticles"
+								},
+								"examples": {
+									"Example 1": {
+										"value": {
+											"list": [
+												{
+													"id": 1,
+													"title": "Mosógép"
+												},
+												{
+													"id": 2,
+													"title": "Hűtőszekrény"
+												},
+												{
+													"id": 3,
+													"title": "Mosogatógép"
+												}
+											],
+											"meta": {
+												"count": 60,
+												"page": 1,
+												"pageCount": 20,
+												"pageSize": 3
+											}
+										}
+									},
+									"Example 2": {
+										"value": {
+											"error": {
+												"message": "Hibaüzenet, ami leírja a pontos hibát.",
+												"code": 500
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "Cikk lista lekérdezése.",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "pageSize",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						},
+						"example": 10
+					},
+					{
+						"in": "path",
+						"name": "page",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						},
+						"examples": {
+							"Example 1": {
+								"value": 1
+							},
+							"Example 2": {
+								"value": 10
+							}
+						}
+					}
+				]
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}
