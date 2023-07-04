@@ -7,10 +7,7 @@ type platformType = typeof platformTypes[number];
 
 @Entity()
 export class Token {
-    @PrimaryGeneratedColumn()
-    id!: number;
-
-    @Column({ length: 128 })
+    @PrimaryGeneratedColumn("uuid")
     uuid!: string;
 
     @Column({ default: tokenConfig.maxRemainingToken })

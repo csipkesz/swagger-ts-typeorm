@@ -72,16 +72,8 @@ export default class TokenController {
                 error: { message: `Nem megfelelő "platform" paraméterezés. Lehetséges értékek: ${platformTypes.join(', ')}`, code: 422 }
             }
         }
-        
-        const generatedToken = uuidv4();
-        if(await this.doesTokenExists(generatedToken)) {
-            return {
-                success: false,
-                error: { message: `Probléma adódott a token generálása közben. Próbálja újra!`,code: 500 }
-            }    
-        }
 
-        const createResult = await tokenRepository.create({ uuid: generatedToken, platform: platform });
+        const createResult = await tokenRepository.create({ platform: platform });
         const saveResult = await tokenRepository.save(createResult);
         if(!saveResult) {
             return {
@@ -92,7 +84,7 @@ export default class TokenController {
 
         return {
             success: true,
-            token: generatedToken,
+            token: saveResult.uuid,
             remaining: tokenConfig.maxRemainingToken,
         };
     }
