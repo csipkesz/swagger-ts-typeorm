@@ -6,3 +6,10 @@ export const tokenConfig = {
         availableToUse: function (lastTime: number) { return (Date.now() - lastTime) > this.timeInMS }
     },
 }
+
+export const articleConfig = {
+    maxLength: {
+        title: 100,
+        description: 5000
+    }
+}

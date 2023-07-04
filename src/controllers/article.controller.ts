@@ -3,6 +3,7 @@ import { Body, Example, Get, Header, Patch, Post, Query, Route } from "tsoa";
 import { AppDataSource } from "../data-source";
 import { Article } from "../entity/article.entity";
 import { controller as TokenController } from "../routes/token.router";
+import { validate } from 'class-validator';
 
 
 const articleRepository = AppDataSource.getRepository(Article);
@@ -71,15 +72,21 @@ export default class ArticleController {
     })
     @Post("/create")
     public async createArticle(@Header() token: string, @Body() params: articleParameters): Promise<responseCreateArticle> {
-        if(params.title.length > 100) {
-            return { error: { message: 'A title hossza maximum 100 karakter lehet.', code: 422 } }
-        }
+        // if(params.title.length > 100) {
+        //     return { error: { message: 'A title hossza maximum 100 karakter lehet.', code: 422 } }
+        // }
 
-        if(params.description.length > 5000) {
-            return { error: { message: 'A description mező hossza maximum 50000 karakter lehet.', code: 422 } }
-        }
+        // if(params.description.length > 5000) {
+        //     return { error: { message: 'A description mező hossza maximum 50000 karakter lehet.', code: 422 } }
+        // }
 
         const createResult = await articleRepository.create({ title: params.title, description: params.description });
+
+        const validateErrors = await validate(createResult);
+        if(validateErrors.length > 0) {
+            throw new Error(validateErrors.toString());
+        }
+
         const saveResult = await articleRepository.save(createResult);
         if(!saveResult) {
             return { error: { message: 'Váratlan adatbázishiba történt a művelet során.', code: 500 } }
