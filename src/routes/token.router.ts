@@ -1,6 +1,7 @@
 import express, { Request } from "express";
 import TokenController from "../controllers/token.controller";
 import { tokenConfig } from "../config";
+import { checkTokenDoesExists } from "../middleware/token.middleware";
 
 const router = express.Router();
 export const controller = new TokenController();
@@ -33,15 +34,14 @@ router.post("/token/create/", async (req, res) => {
   }
 });
 
-router.patch('/token/renew', async (req, res) => {
+router.patch('/token/renew', checkTokenDoesExists, async (req, res) => {
   try {
-
-    if(!req.body.token) {
-      const responseCode: number = 422;
-      return res.status(responseCode).json( { message:  'Token megadása kötelező.', code: responseCode } );
-    }
-    const token = req.body.token;
-
+    // if(!req.body.token) {
+    //   const responseCode: number = 422;
+    //   return res.status(responseCode).json( { message:  'Token megadása kötelező.', code: responseCode } );
+    // }
+    
+    const token = <string>req.headers.token;
     const response = await controller.renewToken(token);
     if(response.error) {
       const error = response.error;

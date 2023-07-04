@@ -1,6 +1,4 @@
-import { Request, Response, query } from "express";
-import { Body, Example, Get, Patch, Post, Query, Route } from "tsoa";
-import { v4 as uuidv4 } from 'uuid';
+import { Body, Example, Get, Header, Patch, Post, Query, Route } from "tsoa";
 import { AppDataSource } from "../data-source";
 import { Token, platformTypes } from "../entity/token.entity";
 import { LessThan, MoreThan } from "typeorm";
@@ -92,7 +90,7 @@ export default class TokenController {
     /**
      * UUID token frissítése.
      * @param token
-     * @example token {"token":"77464b35-7631-4ab1-b2d8-9f1800a0aa4f"}
+     * @example token "2f0c60af-1a50-11ee-b92b-2cf05d2e710e"
      */
     @Example<responseCreateToken>({
         success: true,
@@ -106,20 +104,20 @@ export default class TokenController {
         }
     })
     @Patch('/renew')
-    public async renewToken(@Body() token: string): Promise<responseRenewToken> {
-        if(!token) {
-            return {
-                success: false,
-                error: { message: `Token megadása kötelező.`, code: 422 }
-            }
-        }
+    public async renewToken(@Header() token: string): Promise<responseRenewToken> {
+        // if(!token) {
+        //     return {
+        //         success: false,
+        //         error: { message: `Token megadása kötelező.`, code: 422 }
+        //     }
+        // }
 
-        if(!await this.doesTokenExists(token)) {
-            return {
-                success: false,
-                error: { message: `Token nem létezik, vagy nem megfelelő a formátum.`, code: 422 }
-            }
-        }
+        // if(!await this.doesTokenExists(token)) {
+        //     return {
+        //         success: false,
+        //         error: { message: `Token nem létezik, vagy nem megfelelő a formátum.`, code: 422 }
+        //     }
+        // }
 
         const updateResult = await tokenRepository.update( { uuid: token, remaining: LessThan(5) }, { remaining: tokenConfig.maxRemainingToken })
         if(!updateResult.affected) {

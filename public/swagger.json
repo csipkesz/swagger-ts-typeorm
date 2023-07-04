@@ -292,20 +292,17 @@
 				},
 				"description": "UUID token frissítése.",
 				"security": [],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "string"
-							},
-							"example": {
-								"token": "77464b35-7631-4ab1-b2d8-9f1800a0aa4f"
-							}
-						}
+				"parameters": [
+					{
+						"in": "header",
+						"name": "token",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"example": "2f0c60af-1a50-11ee-b92b-2cf05d2e710e"
 					}
-				}
+				]
 			}
 		},
 		"/article/create": {
@@ -342,7 +339,17 @@
 				},
 				"description": "Cikk létrehozása",
 				"security": [],
-				"parameters": [],
+				"parameters": [
+					{
+						"in": "header",
+						"name": "token",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"example": "2f0c60af-1a50-11ee-b92b-2cf05d2e710e"
+					}
+				],
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -359,7 +366,7 @@
 				}
 			}
 		},
-		"/article/detail/{id}/{token}": {
+		"/article/detail/{id}": {
 			"get": {
 				"operationId": "DetailArticle",
 				"responses": {
@@ -405,13 +412,13 @@
 						"example": "15"
 					},
 					{
-						"in": "path",
+						"in": "header",
 						"name": "token",
 						"required": true,
 						"schema": {
 							"type": "string"
 						},
-						"example": "77464b35-7631-4ab1-b2d8-9f1800a0aa4f"
+						"example": "2f0c60af-1a50-11ee-b92b-2cf05d2e710e"
 					}
 				]
 			}

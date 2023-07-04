@@ -1,10 +1,11 @@
 import express, { Request } from "express";
 import ArticleController from "../controllers/article.controller";
+import { checkTokenIsValid } from "../middleware/token.middleware";
 
 const router = express.Router();
 const controller = new ArticleController();
 
-router.post("/article/create", async (req, res) => { 
+router.post("/article/create", checkTokenIsValid, async (req, res) => { 
     try {
         if(!req.body.title) {
             const responseCode: number = 422;
@@ -17,8 +18,9 @@ router.post("/article/create", async (req, res) => {
             return res.status(responseCode).json( { message: `Description megadása kötelező. `, code: responseCode } );
         }
         const description = req.body.description;
+        const token =  <string>req.headers.token;
         
-        const response = await controller.createArticle( {title, description} );
+        const response = await controller.createArticle( token, {title, description} );
         if(response.error) {
             const error = response.error;
             const responseCode = error.code || 500;
@@ -33,19 +35,14 @@ router.post("/article/create", async (req, res) => {
     }
 });
 
-router.get('/article/detail/:id/:token', async (req, res) => {
+router.get('/article/detail/:id', checkTokenIsValid, async (req, res) => {
     try {
         if(!req.params.id || isNaN(parseInt(req.params.id))) {
             const responseCode: number = 422;
             return res.status(responseCode).json( { message: `Nem megfelelő azonosító paraméter.`, code: responseCode } );
         }
         const id: number = parseInt(req.params.id);
-
-        if(!req.params.token) {
-            const responseCode: number = 422;
-            return res.status(responseCode).json( { message: `Nem megfelelő token paraméter.`, code: responseCode } );
-        }
-        const token = req.params.token;
+        const token = <string>req.headers.token;
         
         const response = await controller.detailArticle( id, token );
         if(response.error) {
